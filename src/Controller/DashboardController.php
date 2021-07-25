@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use Cake\ORM\Query;
+
 /**
  * DeviceGroups Controller
  *
@@ -28,6 +30,9 @@ class DashboardController extends AppController
     public function index()
     {
         $deviceGroups = $this->DeviceGroups->find()
+            ->contain(['Devices' => function(Query $query) {
+                return $query->orderAsc('Devices.name');
+            }])
             ->orderAsc('DeviceGroups.name')
             ->all();
 
