@@ -1,53 +1,59 @@
-# CakePHP Application Skeleton
+# One CakePHP project a day challenge - Day 14 Smart Home Dashboard with MQTT
 
-![Build Status](https://github.com/cakephp/app/actions/workflows/ci.yml/badge.svg?branch=master)
-[![Total Downloads](https://img.shields.io/packagist/dt/cakephp/app.svg?style=flat-square)](https://packagist.org/packages/cakephp/app)
-[![PHPStan](https://img.shields.io/badge/PHPStan-level%207-brightgreen.svg?style=flat-square)](https://github.com/phpstan/phpstan)
+On this project I'm using CakePHP 4, CakeDC/Users plugin, php-mqtt/client (testing with Mosquitto Broker) and Bootstrap 5.
+The application is able to publish messages to change device status and subscribe for status changes.
 
-A skeleton for creating applications with [CakePHP](https://cakephp.org) 4.x.
+## Steps to create this project
 
-The framework source code can be found here: [cakephp/cakephp](https://github.com/cakephp/cakephp).
+- 7505ea7 Init and boostrap setup
+  ```
+  composer create-project --prefer-dist cakephp/app
+  ```
+- 6ab0174 Added Base Models
+  ```
+  bin/cake bake migration CreateDeviceGroups name
+  bin/cake bake migration CreateDevices id:uuid name type last_status device_group_id:integer  created  modified
+  bin/cake migrations migrate
+  bin/cake bake model DeviceGroups
+  bin/cake bake model Devices
+  ```
+- 1c33371 Started dashboard with groups
+- b7ed054 Added actions to manage devices
+- f401b12 Display devices in the dashboard
+- c9bb037 Update Device Status on Database
+- 9374e07 Add php-mqtt client:
+  ```
+  composer require php-mqtt/client
+  ```
+- 03211b7 Publish message using MQTT when user change device status
+- 3312e4e Added a command to simulate the smart home center device (raspberry pi)
+- 2b87291 Added a command to subscribe to message from SmartHome Center
+- c6224f8 Added Link to Delete Device
+- e8de6f4 Fixed non inline images
+- 9dc9b6e Added sample command to simulate SmartHome center publishing status
+- 2541484 Added MQTT modal info for each device
+- c10d28b Added Svg icon for delete button
+- 88550ea Removed device id from cards, we already have info in the modal
+- b943042 Improved header
+- fad2c6e Added CakeDC/Users
+  ```
+  composer require cakedc/users
+  cp vendor/cakedc/users/config/users.php config/
+  cp vendor/cakedc/users/config/permissions.php config/
+  cp vendor/cakedc/users/config/Migrations/* config/Migrations/
+  bin/cake migrations migrate
+  bin/cake users add_superuser
+  ```
 
-## Installation
+## Result
+![alt text](./result-14-smart-home-dashboard-mqtt.png)
 
-1. Download [Composer](https://getcomposer.org/doc/00-intro.md) or update `composer self-update`.
-2. Run `php composer.phar create-project --prefer-dist cakephp/app [app_name]`.
+![alt text](./result-14-smart-home-dashboard-mqtt-02.png)
 
-If Composer is installed globally, run
-
-```bash
-composer create-project --prefer-dist cakephp/app
-```
-
-In case you want to use a custom app dir name (e.g. `/myapp/`):
-
-```bash
-composer create-project --prefer-dist cakephp/app myapp
-```
-
-You can now either use your machine's webserver to view the default home page, or start
-up the built-in webserver with:
-
-```bash
-bin/cake server -p 8765
-```
-
-Then visit `http://localhost:8765` to see the welcome page.
-
-## Update
-
-Since this skeleton is a starting point for your application and various files
-would have been modified as per your needs, there isn't a way to provide
-automated upgrades, so you have to do any updates manually.
-
-## Configuration
-
-Read and edit the environment specific `config/app_local.php` and setup the 
-`'Datasources'` and any other configuration relevant for your application.
-Other environment agnostic settings can be changed in `config/app.php`.
-
-## Layout
-
-The app skeleton uses [Milligram](https://milligram.io/) (v1.3) minimalist CSS
-framework by default. You can, however, replace it with any other library or
-custom styles.
+## Links
+- https://github.com/cakedc/users
+- https://github.com/php-mqtt/client
+- https://hub.docker.com/_/eclipse-mosquitto
+- https://icons.getbootstrap.com/
+- https://mosquitto.org/
+- https://www.svgrepo.com/
