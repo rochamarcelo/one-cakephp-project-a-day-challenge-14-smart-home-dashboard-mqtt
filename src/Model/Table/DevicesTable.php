@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Model\Table;
 
+use App\Model\Entity\Device;
+use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
 use Cake\ORM\Table;
@@ -86,6 +88,17 @@ class DevicesTable extends Table
     }
 
     /**
+     * @param Event $event
+     * @param Device $device
+     */
+    public function beforeSave(Event $event, Device $device)
+    {
+        if ($device->isNew() && empty($device->last_status)) {
+            $device->last_status = Device::STATUS_N_A;
+        }
+    }
+
+    /**
      * Returns a rules checker object that will be used for validating
      * application integrity.
      *
@@ -95,7 +108,27 @@ class DevicesTable extends Table
     public function buildRules(RulesChecker $rules): RulesChecker
     {
         $rules->add($rules->existsIn(['device_group_id'], 'DeviceGroups'), ['errorField' => 'device_group_id']);
+        $rules->add(function(Device $device) {
+            $list = array_keys($this->getTypes());
+
+            return in_array($device->type, $list);
+        }, ['errorField' => 'type', 'message' => __('Invalid value for type')]);
 
         return $rules;
+    }
+
+    /**
+     * @return array
+     */
+    public function getTypes(): array
+    {
+        return [
+            Device::TYPE_AUDIO_SYSTEM => __('Audio System'),
+            Device::TYPE_CURTAIN => __('Curtain'),
+            Device::TYPE_DOOR => __('Door'),
+            Device::TYPE_LIGHT_BULB => __('Light Bulb'),
+            Device::TYPE_TV => __('TV'),
+            Device::TYPE_WINDOW => __('Window'),
+        ];
     }
 }

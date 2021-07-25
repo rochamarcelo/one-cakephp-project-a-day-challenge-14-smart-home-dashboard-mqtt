@@ -20,6 +20,17 @@ use Cake\ORM\Entity;
  */
 class Device extends Entity
 {
+    const TYPE_LIGHT_BULB = 'LIGHT_BULB';
+    const TYPE_TV = 'TV';
+    const TYPE_AUDIO_SYSTEM = 'AUDIO_SYSTEM';
+    const TYPE_CURTAIN = 'CURTAIN';
+    const TYPE_DOOR = 'DOOR';
+    const TYPE_WINDOW = 'WINDOW';
+
+    const STATUS_ON = 'ON';
+    const STATUS_OFF = 'OFF';
+    const STATUS_N_A = 'N_A';
+
     /**
      * Fields that can be mass assigned using newEntity() or patchEntity().
      *
