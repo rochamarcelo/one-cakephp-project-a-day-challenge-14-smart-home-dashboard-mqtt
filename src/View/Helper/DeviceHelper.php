@@ -10,6 +10,7 @@ use Cake\View\Helper;
  * Device helper
  *
  * @property \Cake\View\Helper\FormHelper $Form
+ * @property \Cake\View\Helper\HtmlHelper $Html
  */
 class DeviceHelper extends Helper
 {
@@ -32,7 +33,7 @@ class DeviceHelper extends Helper
         Device::TYPE_WINDOW => 'window-svgrepo-com.svg',
     ];
 
-    protected $helpers = ['Form'];
+    protected $helpers = ['Form', 'Html'];
 
     /**
      * @inheritDoc
@@ -51,7 +52,9 @@ class DeviceHelper extends Helper
     {
         $image = $this->inlineImages[$type] ?? null;
         if ($image === null) {
-            $image = $this->images[$type] ?? null;
+            return $this->Html->image($this->images[$type], [
+                'style' => 'height:120px',
+            ]);
         }
 
         return $image ?? '';
