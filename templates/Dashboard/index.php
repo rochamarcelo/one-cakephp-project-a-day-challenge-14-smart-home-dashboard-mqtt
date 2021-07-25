@@ -2,6 +2,9 @@
 /**
  * @var \App\View\AppView $this
  * @var \App\Model\Entity\DeviceGroup[]|\Cake\Collection\CollectionInterface $deviceGroups
+ * @var array $publishTopicPrefix
+ * @var array $subscribeTopicPrefix
+ * @var array $mqttMessages
  */
 ?>
 <div class="col">
@@ -42,7 +45,9 @@ $addDeviceUrl = $this->Url->build([
                       <div class="form-check form-switch pull-right">
                           <?= $this->Device->checkbox($device)?>
                       </div>
-                      <?= $this->Device->image($device->type)?>
+                      <div data-bs-toggle="modal" data-bs-target="#infoDevice<?= h($device->id)?>" style="cursor: pointer">
+                        <?= $this->Device->image($device->type)?>
+                      </div>
                       <h5 class="card-title mt-2"><?= h($device->name)?></h5>
                       <small>Code: <?= h($device->id)?></small>
                       <?= $this->Form->postLink(
@@ -56,6 +61,30 @@ $addDeviceUrl = $this->Url->build([
                               'class' => 'btn btn-link'
                           ]
                       ) ?>
+                  </div>
+              </div>
+          </div>
+          <!-- Modal -->
+          <div class="modal fade" id="infoDevice<?= h($device->id)?>" tabindex="-1" aria-labelledby="infoDevice<?= h($device->id)?>Label" aria-hidden="true">
+              <div class="modal-dialog">
+                  <div class="modal-content">
+                      <div class="modal-header">
+                          <h5 class="modal-title" id="infoDevice<?= h($device->id)?>Label"><?= __('MQTT Info')?></h5>
+                          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+                      </div>
+                      <div class="modal-body">
+                          <p><strong><?= __('We send update using topic:')?></strong><br />
+                          <span><?= $publishTopicPrefix?><?= ($device->id)?></span>
+                          </p>
+                          <p><strong><?= __('We subscribe change of topic: ')?></strong><br />
+                              <span><?= $subscribeTopicPrefix?><?= ($device->id)?></span>
+                          </p>
+                          <hr />
+                          <p><?= __('Valid message values are: {0}', $this->Text->toList($mqttMessages))?></p>
+                      </div>
+                      <div class="modal-footer">
+                          <button type="button" class="btn btn-secondary" data-bs-dismiss="modal"><?= __('Got it')?></button>
+                      </div>
                   </div>
               </div>
           </div>

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\Entity\Device;
+use Cake\Core\Configure;
 use Cake\ORM\Query;
 
 /**
@@ -29,6 +31,9 @@ class DashboardController extends AppController
      */
     public function index()
     {
+        $publishTopicPrefix = Configure::read('MqttBroker.publishTopicPrefix');
+        $subscribeTopicPrefix = substr(Configure::read('MqttBroker.subscribeTopicFilter'), 0 , -1);
+        $mqttMessages = [Device::STATUS_ON, Device::STATUS_OFF,];
         $deviceGroups = $this->DeviceGroups->find()
             ->contain(['Devices' => function(Query $query) {
                 return $query->orderAsc('Devices.name');
@@ -36,6 +41,6 @@ class DashboardController extends AppController
             ->orderAsc('DeviceGroups.name')
             ->all();
 
-        $this->set(compact('deviceGroups'));
+        $this->set(compact('deviceGroups', 'publishTopicPrefix', 'subscribeTopicPrefix', 'mqttMessages'));
     }
 }
