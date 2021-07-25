@@ -148,15 +148,29 @@ class DevicesTable extends Table
         $device->last_status = $status;
 
         $result = (bool)$this->save($device, ['checkRules' => false]);
-        if (!$result) {
+        if (!$result || $notify === false) {
             return $result;
         }
-        $mqtt = ClientBuilder::create();
-        $mqtt->connect();
-        $topic = Configure::read('MqttBroker.publishTopicPrefix') . $device->id;
-        $mqtt->publish($topic, $device->last_status, 0);
-        $mqtt->disconnect();
+        $this->notifyUpdate($device->id, $status);
 
         return $result;
+    }
+
+    /**
+     * @param string $id
+     * @param string $status
+     * @throws \PhpMqtt\Client\Exceptions\ConfigurationInvalidException
+     * @throws \PhpMqtt\Client\Exceptions\ConnectingToBrokerFailedException
+     * @throws \PhpMqtt\Client\Exceptions\DataTransferException
+     * @throws \PhpMqtt\Client\Exceptions\ProtocolNotSupportedException
+     * @throws \PhpMqtt\Client\Exceptions\RepositoryException
+     */
+    public function notifyUpdate(string $id, $status): void
+    {
+        $mqtt = ClientBuilder::create();
+        $mqtt->connect();
+        $topic = Configure::read('MqttBroker.publishTopicPrefix') . $id;
+        $mqtt->publish($topic, $status, 0);
+        $mqtt->disconnect();
     }
 }
