@@ -6,6 +6,7 @@
  * @var array $subscribeTopicPrefix
  * @var array $mqttMessages
  */
+$this->assign('title', __('Smart Home Dashboard'));
 ?>
 <div class="col">
 <?= $this->Form->create(null, [
