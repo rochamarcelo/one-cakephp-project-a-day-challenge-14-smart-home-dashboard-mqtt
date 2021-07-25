@@ -131,4 +131,20 @@ class DevicesTable extends Table
             Device::TYPE_WINDOW => __('Window'),
         ];
     }
+
+    /**
+     * @param Device $device
+     * @param $status
+     * @param bool $notify
+     * @return bool
+     */
+    public function updateStatus(Device $device, $status, bool $notify = false): bool
+    {
+        if ($status !== Device::STATUS_ON) {
+            $status = Device::STATUS_OFF;
+        }
+        $device->last_status = $status;
+
+        return (bool)$this->save($device, ['checkRules' => false]);
+    }
 }

@@ -3,6 +3,8 @@ declare(strict_types=1);
 
 namespace App\Controller;
 
+use App\Model\Entity\Device;
+
 /**
  * Devices Controller
  *
@@ -75,6 +77,23 @@ class DevicesController extends AppController
             $this->Flash->success(__('The device has been deleted.'));
         } else {
             $this->Flash->error(__('The device could not be deleted. Please, try again.'));
+        }
+
+        return $this->redirect(['controller' => 'Dashboard', 'action' => 'index']);
+    }
+
+    /**
+     * @param string|null $id
+     */
+    public function updateStatus($id)
+    {
+        $this->request->allowMethod(['post', 'put']);
+        $device = $this->Devices->get($id);
+        $status = $this->request->getData('last_status');
+        if ($this->Devices->updateStatus($device, $status, true)) {
+            $this->Flash->success(__('The device status was updated.'));
+        } else {
+            $this->Flash->error(__('Coult not update the status'));
         }
 
         return $this->redirect(['controller' => 'Dashboard', 'action' => 'index']);

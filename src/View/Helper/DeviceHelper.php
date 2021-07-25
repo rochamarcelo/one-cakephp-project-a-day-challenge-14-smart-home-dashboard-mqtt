@@ -59,9 +59,21 @@ class DeviceHelper extends Helper
 
     public function checkbox(Device $device)
     {
-        return $this->Form->checkbox('last_status', [
+        $html = $this->Form->create(null, [
+            'url' => [
+                'controller' => 'Devices',
+                'action' => 'updateStatus',
+                $device->id,
+            ],
+        ]);
+        $html .= $this->Form->checkbox('last_status', [
             'checked' => $device->last_status == Device::STATUS_ON,
             'class' => 'form-check-input',
+            'value' => Device::STATUS_ON,
+            'onchange' => 'this.form.submit()',
         ]);
+        $html .= $this->Form->end();
+
+        return $html;
     }
 }
