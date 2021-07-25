@@ -95,5 +95,7 @@ return [
         'host' => '127.0.0.1',
         'port' => '1883',
         'client_id' => null,
+        'publishTopicPrefix' => '/smart-home/update-from-dashboard/',
+        'subscribeTopicFilter' => '/smart-home/statuses/#'
     ],
 ];

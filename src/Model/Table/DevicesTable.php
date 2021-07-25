@@ -4,6 +4,8 @@ declare(strict_types=1);
 namespace App\Model\Table;
 
 use App\Model\Entity\Device;
+use App\Mqtt\ClientBuilder;
+use Cake\Core\Configure;
 use Cake\Event\Event;
 use Cake\ORM\Query;
 use Cake\ORM\RulesChecker;
@@ -145,6 +147,16 @@ class DevicesTable extends Table
         }
         $device->last_status = $status;
 
-        return (bool)$this->save($device, ['checkRules' => false]);
+        $result = (bool)$this->save($device, ['checkRules' => false]);
+        if (!$result) {
+            return $result;
+        }
+        $mqtt = ClientBuilder::create();
+        $mqtt->connect();
+        $topic = Configure::read('MqttBroker.publishTopicPrefix') . $device->id;
+        $mqtt->publish($topic, $device->last_status, 0);
+        $mqtt->disconnect();
+
+        return $result;
     }
 }
