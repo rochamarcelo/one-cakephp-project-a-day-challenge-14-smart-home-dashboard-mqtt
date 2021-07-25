@@ -45,6 +45,17 @@ $addDeviceUrl = $this->Url->build([
                       <?= $this->Device->image($device->type)?>
                       <h5 class="card-title mt-2"><?= h($device->name)?></h5>
                       <small>Code: <?= h($device->id)?></small>
+                      <?= $this->Form->postLink(
+                          __('Delete'),
+                          [
+                              'controller' => 'Devices',
+                              'action' => 'delete', $device->id
+                          ],
+                          [
+                              'confirm' => __('Are you sure you want to delete # {0}?', $device->id),
+                              'class' => 'btn btn-link'
+                          ]
+                      ) ?>
                   </div>
               </div>
           </div>
